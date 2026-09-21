@@ -9,9 +9,13 @@ This repo contains a template you can copy for using [tldraw](https://github.com
 
 ## Local development
 
-Install dependencies with `yarn` or `npm install`.
+This project uses [Bun](https://bun.sh/) as its package manager and runtime.
 
-Run the development server with `yarn dev` or `npm run dev`.
+Install dependencies with `bun install`.
+
+Run the development server with `bun run dev`.
+
+Build with `bun run build`, then preview the build with `bun run preview`.
 
 Open `http://localhost:5173/` in your browser to see the app.
 
