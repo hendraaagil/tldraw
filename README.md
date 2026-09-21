@@ -19,6 +19,24 @@ Build with `bun run build`, then preview the build with `bun run preview`.
 
 Open `http://localhost:5173/` in your browser to see the app.
 
+## Docker
+
+Build and run with Docker Compose:
+
+```sh
+docker compose up -d --build
+```
+
+The app is served by nginx on port `3002`, so it is reachable from other machines on the same network at `http://<server-ip>:3002/`.
+
+To expose it publicly through a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/), copy `.env.sample` to `.env` next to `compose.yml` and fill in your tunnel token:
+
+```sh
+cp .env.sample .env
+```
+
+Point the tunnel's public hostname at `http://app:80` — `cloudflared` reaches the app over the compose network, so no port needs to be opened on your router.
+
 ## License
 
 This project is provided under the MIT license found [here](https://github.com/tldraw/vite-template/blob/main/LICENSE.md). The tldraw SDK is provided under the [tldraw license](https://github.com/tldraw/tldraw/blob/main/LICENSE.md).
