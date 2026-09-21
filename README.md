@@ -37,6 +37,12 @@ cp .env.sample .env
 
 Point the tunnel's public hostname at `http://app:80` — `cloudflared` reaches the app over the compose network, so no port needs to be opened on your router.
 
+### Deployment
+
+Pushing to `main` (or running the **Build & Deploy** workflow manually) connects to the home server over Tailscale, writes `.env` from the `CLOUDFLARE_TUNNEL_TOKEN` secret, pulls the repo into `~/apps/tldraw` and runs `docker compose up --build -d`.
+
+Required repository secrets: `CLOUDFLARE_TUNNEL_TOKEN`, `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `VPS_PRIVATE_KEY`. Required variables: `VPS_USER`, `VPS_HOST`, `REPO_URL`.
+
 ## License
 
 This project is provided under the MIT license found [here](https://github.com/tldraw/vite-template/blob/main/LICENSE.md). The tldraw SDK is provided under the [tldraw license](https://github.com/tldraw/tldraw/blob/main/LICENSE.md).
