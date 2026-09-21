@@ -29,19 +29,23 @@ docker compose up -d --build
 
 The app is served by nginx on port `3002`, so it is reachable from other machines on the same network at `http://<server-ip>:3002/`.
 
-To expose it publicly through a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/), copy `.env.sample` to `.env` next to `compose.yml` and fill in your tunnel token:
+Copy `.env.sample` to `.env` next to `compose.yml` and fill it in:
 
 ```sh
 cp .env.sample .env
 ```
 
+`VITE_TLDRAW_LICENSE_KEY` is a [tldraw license key](https://tldraw.dev). It is required for anything that is not localhost — without it the editor renders for five seconds and then hides itself, leaving a blank white page. Vite inlines it at build time, so it is passed into the image as a build arg and a rebuild (`docker compose up -d --build`) is needed after changing it.
+
+`CLOUDFLARE_TUNNEL_TOKEN` exposes the app publicly through a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/).
+
 Point the tunnel's public hostname at `http://app:80` — `cloudflared` reaches the app over the compose network, so no port needs to be opened on your router.
 
 ### Deployment
 
-Pushing to `main` (or running the **Build & Deploy** workflow manually) connects to the home server over Tailscale, writes `.env` from the `CLOUDFLARE_TUNNEL_TOKEN` secret, pulls the repo into `~/apps/tldraw` and runs `docker compose up --build -d`.
+Pushing to `main` (or running the **Build & Deploy** workflow manually) connects to the home server over Tailscale, writes `.env` from the repository secrets, pulls the repo into `~/apps/tldraw` and runs `docker compose up --build -d`.
 
-Required repository secrets: `CLOUDFLARE_TUNNEL_TOKEN`, `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `VPS_PRIVATE_KEY`. Required variables: `VPS_USER`, `VPS_HOST`, `REPO_URL`.
+Required repository secrets: `CLOUDFLARE_TUNNEL_TOKEN`, `TLDRAW_LICENSE_KEY`, `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `VPS_PRIVATE_KEY`. Required variables: `VPS_USER`, `VPS_HOST`, `REPO_URL`.
 
 ## License
 
