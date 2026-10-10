@@ -6,7 +6,6 @@ services:
       args:
         VITE_TLDRAW_LICENSE_KEY: ${VITE_TLDRAW_LICENSE_KEY}
         VITE_SYNC_URI: ${VITE_SYNC_URI}
-        VITE_SYNC_ROOM: ${VITE_SYNC_ROOM}
     image: tldraw:latest
     container_name: tldraw
     restart: always

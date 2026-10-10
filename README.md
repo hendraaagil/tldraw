@@ -51,9 +51,13 @@ bun run server        # ws://localhost:5858
 ```
 
 Then build the client with `VITE_SYNC_URI` pointing at it (base URL, no trailing
-slash) — `wss://<host>` in production, `ws://localhost:5858` locally. The client
-connects to `${VITE_SYNC_URI}/connect/${VITE_SYNC_ROOM}` (room defaults to
-`default`) and uploads image/video assets to `${VITE_SYNC_URI}/uploads/`.
+slash) — `wss://<host>` in production, `ws://localhost:5858` locally.
+
+The room comes from the URL path `/r/<roomId>`: sharing the link shares the
+board. Allowed rooms are the `ROOMS` list in `src/App.tsx`; a bare or unknown
+URL shows a picker. The client connects to `${VITE_SYNC_URI}/connect/<roomId>`
+and uploads image/video assets to `${VITE_SYNC_URI}/uploads/`. (Deep links rely
+on the SPA fallback in `nginx.conf`.)
 
 The server keeps one room per `roomId`, saving snapshots and uploaded assets
 under `DATA_DIR` (`server/.data` locally; in Docker, `/data` bind-mounted from
