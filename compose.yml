@@ -25,6 +25,8 @@ services:
     image: tldraw-sync:latest
     container_name: tldraw_sync
     restart: always
+    environment:
+      SYNC_SECRET: ${SYNC_SECRET}
     deploy:
       resources:
         limits:

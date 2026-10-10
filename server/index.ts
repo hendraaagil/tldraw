@@ -6,6 +6,8 @@ import { join } from 'node:path'
 // uploaded assets persisted to disk under DATA_DIR. Run: `bun run server`.
 
 const PORT = Number(process.env.PORT ?? 5858)
+const SECRET = process.env.SYNC_SECRET // unset = no auth
+const authed = (url: URL) => !SECRET || url.searchParams.get('secret') === SECRET
 const DATA_DIR = process.env.DATA_DIR ?? join(import.meta.dir, '.data')
 const ROOMS_DIR = join(DATA_DIR, 'rooms')
 const ASSETS_DIR = join(DATA_DIR, 'assets')
@@ -63,8 +65,12 @@ Bun.serve<{ roomId: string; sessionId: string }>({
 
 		if (pathname === '/health') return new Response('ok')
 
+		// Cheap token check for the client gate.
+		if (pathname === '/auth') return cors(new Response(null, { status: authed(url) ? 200 : 401 }))
+
 		const connect = pathname.match(/^\/connect\/(.+)$/)
 		if (connect) {
+			if (!authed(url)) return new Response('unauthorized', { status: 401 })
 			const roomId = decodeURIComponent(connect[1])
 			const sessionId = url.searchParams.get('sessionId')
 			if (!sessionId) return new Response('missing sessionId', { status: 400 })
@@ -79,9 +85,11 @@ Bun.serve<{ roomId: string; sessionId: string }>({
 			const file = Bun.file(join(ASSETS_DIR, id))
 			if (req.method === 'OPTIONS') return cors(new Response(null, { status: 204 }))
 			if (req.method === 'PUT') {
+				if (!authed(url)) return cors(new Response('unauthorized', { status: 401 }))
 				await Bun.write(file, req)
 				return cors(new Response(null, { status: 201 }))
 			}
+			// GET left open: assets render in <img>, which cannot send the token.
 			if (req.method === 'GET') {
 				if (!(await file.exists())) return new Response('not found', { status: 404 })
 				return cors(new Response(file))
