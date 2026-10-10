@@ -41,6 +41,28 @@ cp .env.sample .env
 
 Point the tunnel's public hostname at `http://app:80` — `cloudflared` reaches the app over the compose network, so no port needs to be opened on your router.
 
+## Sync (cross-device collaboration)
+
+Without a server, the canvas persists only to the local browser (IndexedDB via
+`persistenceKey`). To sync across devices, run the Bun sync server in `server/`:
+
+```sh
+bun run server        # ws://localhost:5858
+```
+
+Then build the client with `VITE_SYNC_URI` pointing at it (base URL, no trailing
+slash) — `wss://<host>` in production, `ws://localhost:5858` locally. The client
+connects to `${VITE_SYNC_URI}/connect/${VITE_SYNC_ROOM}` (room defaults to
+`default`) and uploads image/video assets to `${VITE_SYNC_URI}/uploads/`.
+
+The server keeps one room per `roomId`, saving snapshots and uploaded assets
+under `DATA_DIR` (`server/.data` locally; in Docker, `/data` bind-mounted from
+the host `SYNC_DATA_DIR`, e.g. `/mnt/data-drive/tldraw`).
+
+Docker Compose runs it as the `sync` service on port `5858`. Add a second
+Cloudflare Tunnel public hostname pointing at `http://sync:5858` and set
+`VITE_SYNC_URI` to that hostname's `wss://` URL before building the `app` image.
+
 ### Deployment
 
 Pushing to `main` (or running the **Build & Deploy** workflow manually) connects to the home server over Tailscale, writes `.env` from the repository secrets, pulls the repo into `~/apps/tldraw` and runs `docker compose up --build -d`.

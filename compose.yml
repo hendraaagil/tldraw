@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_TLDRAW_LICENSE_KEY: ${VITE_TLDRAW_LICENSE_KEY}
+        VITE_SYNC_URI: ${VITE_SYNC_URI}
+        VITE_SYNC_ROOM: ${VITE_SYNC_ROOM}
     image: tldraw:latest
     container_name: tldraw
     restart: always
@@ -17,6 +19,24 @@ services:
     networks:
       - app-network
 
+  sync:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    image: tldraw-sync:latest
+    container_name: tldraw_sync
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    ports:
+      - '5858:5858'
+    volumes:
+      - ${SYNC_DATA_DIR:-./server/.data}:/data
+    networks:
+      - app-network
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: tldraw_cloudflared
@@ -24,6 +44,7 @@ services:
     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
       - app
+      - sync
     networks:
       - app-network
 
