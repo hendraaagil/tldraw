@@ -39,36 +39,7 @@ function SyncedCanvas({ room }: { room: string }) {
 		uri: `${SYNC_URI}/connect/${room}?secret=${encodeURIComponent(TOKEN ?? '')}`,
 		assets,
 	})
-	return (
-		<>
-			<Tldraw store={store} />
-			<select
-				value={room}
-				onChange={(e) => {
-					window.location.href = `/r/${e.target.value}`
-				}}
-				style={{
-					position: 'absolute',
-					top: 8,
-					left: '50%',
-					transform: 'translateX(-50%)',
-					zIndex: 1000,
-					padding: '6px 10px',
-					borderRadius: 8,
-					border: '1px solid #ccc',
-					background: 'white',
-					fontSize: 14,
-					cursor: 'pointer',
-				}}
-			>
-				{ROOMS.map((r) => (
-					<option key={r} value={r}>
-						{r}
-					</option>
-				))}
-			</select>
-		</>
-	)
+	return <Tldraw store={store} />
 }
 
 const center: React.CSSProperties = {
