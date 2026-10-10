@@ -71,7 +71,7 @@ Cloudflare Tunnel public hostname pointing at `http://sync:5858` and set
 
 Pushing to `main` (or running the **Build & Deploy** workflow manually) connects to the home server over Tailscale, writes `.env` from the repository secrets, pulls the repo into `~/apps/tldraw` and runs `docker compose up --build -d`.
 
-Required repository secrets: `CLOUDFLARE_TUNNEL_TOKEN`, `TLDRAW_LICENSE_KEY`, `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `VPS_PRIVATE_KEY`. Required variables: `VPS_USER`, `VPS_HOST`, `REPO_URL`.
+Required repository secrets: `CLOUDFLARE_TUNNEL_TOKEN`, `TLDRAW_LICENSE_KEY`, `SYNC_SECRET`, `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `VPS_PRIVATE_KEY`. Required variables: `VPS_USER`, `VPS_HOST`, `REPO_URL`, `VITE_SYNC_URI`, `SYNC_DATA_DIR`.
 
 ## License
 

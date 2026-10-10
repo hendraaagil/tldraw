@@ -22,6 +22,9 @@ jobs:
         run: |
           echo "CLOUDFLARE_TUNNEL_TOKEN=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}" > .env
           echo "VITE_TLDRAW_LICENSE_KEY=${{ secrets.TLDRAW_LICENSE_KEY }}" >> .env
+          echo "VITE_SYNC_URI=${{ vars.VITE_SYNC_URI }}" >> .env
+          echo "SYNC_SECRET=${{ secrets.SYNC_SECRET }}" >> .env
+          echo "SYNC_DATA_DIR=${{ vars.SYNC_DATA_DIR }}" >> .env
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
